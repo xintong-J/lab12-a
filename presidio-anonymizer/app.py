@@ -11,6 +11,7 @@ from flask import Flask, Response, jsonify, request
 from presidio_anonymizer import AnonymizerEngine, DeanonymizeEngine
 from presidio_anonymizer.entities import InvalidParamError
 from presidio_anonymizer.services.app_entities_convertor import AppEntitiesConvertor
+from presidio_anonymizer.operators.genz import GenZ
 from werkzeug.exceptions import BadRequest, HTTPException
 
 DEFAULT_PORT = "3000"
@@ -104,24 +105,31 @@ class Server:
         @self.app.route("/genz", methods=["GET"])
         def genz():
             """Retrurn genz anonymization."""
+            gz = GenZ()
+            p_r = gz.operate(params={"entity_type": "PERSON"})
+            ph_r = gz.operate(params={"entity_type": "PHONE_NUMBER"})
+            p_s = 15
+            p_e = p_s + len(p_r)
+            ph_s = p_e + 4  
+            ph_e = ph_s + len(ph_r)
+            
             responsec = {
-                "text": "Please contact GOAT at oop— if you have"
-                "questions about the workshop registration.",
+                "text": f"Please contact {p_r} at {ph_r} if you have questions about the workshop registration.",
                 "items": [
-                {
-                    "start": 23,
-                    "end": 27,
-                    "entity_type": "PHONE_NUMBER",
-                    "text": "oop—",
-                    "operator": "genz"
-                },
-                {
-                    "start": 15,
-                    "end": 19,
-                    "entity_type": "PERSON",
-                    "text": "GOAT",
-                    "operator": "genz"
-                }
+                    {
+                        "start": p_s,
+                        "end": p_e,
+                        "entity_type": "PERSON",
+                        "text": p_r,
+                        "operator": "genz"
+                        },
+                    {
+                        "start": ph_s,
+                        "end": ph_e,
+                        "entity_type": "PHONE_NUMBER",
+                        "text": ph_r,
+                        "operator": "genz"
+                    }
                 ]
             }
             return jsonify(responsec)
