@@ -10,8 +10,8 @@ from pathlib import Path
 from flask import Flask, Response, jsonify, request
 from presidio_anonymizer import AnonymizerEngine, DeanonymizeEngine
 from presidio_anonymizer.entities import InvalidParamError
-from presidio_anonymizer.services.app_entities_convertor import AppEntitiesConvertor
 from presidio_anonymizer.operators.genz import GenZ
+from presidio_anonymizer.services.app_entities_convertor import AppEntitiesConvertor
 from werkzeug.exceptions import BadRequest, HTTPException
 
 DEFAULT_PORT = "3000"
@@ -113,7 +113,8 @@ class Server:
             ph_s = p_e + 4
             ph_e = ph_s + len(ph_r)
             responsec = {
-                "text": f"Please contact {p_r} at {ph_r} if you have questions about the workshop registration.",
+                "text": f"Please contact {p_r} at {ph_r} if you have questions about"
+                "the workshop registration.",
                 "items": [
                     {
                         "start": p_s,
