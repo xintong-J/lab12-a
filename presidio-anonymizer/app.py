@@ -101,6 +101,30 @@ class Server:
             ])
             responseb = json.dumps(responsea)
             return Response(responseb, mimetype='application/json')
+        @self.app.route("/genz", methods=["GET"])
+        def genz():
+            """Retrurn genz anonymization."""
+            responsec = {
+                "text": "Please contact GOAT at oop— if you have"
+                "questions about the workshop registration.",
+                "items": [
+                {
+                    "start": 23,
+                    "end": 27,
+                    "entity_type": "PHONE_NUMBER",
+                    "text": "oop—",
+                    "operator": "genz"
+                },
+                {
+                    "start": 15,
+                    "end": 19,
+                    "entity_type": "PERSON",
+                    "text": "GOAT",
+                    "operator": "genz"
+                }
+                ]
+            }
+            return jsonify(responsec)
         @self.app.route("/deanonymizers", methods=["GET"])
         def deanonymizers():
             """Return a list of supported deanonymizers."""
