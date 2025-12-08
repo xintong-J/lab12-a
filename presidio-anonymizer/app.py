@@ -110,9 +110,8 @@ class Server:
             ph_r = gz.operate(params={"entity_type": "PHONE_NUMBER"})
             p_s = 15
             p_e = p_s + len(p_r)
-            ph_s = p_e + 4  
+            ph_s = p_e + 4
             ph_e = ph_s + len(ph_r)
-            
             responsec = {
                 "text": f"Please contact {p_r} at {ph_r} if you have questions about the workshop registration.",
                 "items": [
