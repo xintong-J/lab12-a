@@ -95,6 +95,7 @@ class Server:
             return jsonify(self.anonymizer.get_anonymizers())
         @self.app.route("/genz-preview", methods=["GET"])
         def genz_preview():
+            """Return genz preview anonymization."""
             responsea = OrderedDict([
                 ("example","Call Emily at 577-988-1234"),
                 ("example output","Call GOAT at vibe check"),
