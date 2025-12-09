@@ -95,6 +95,7 @@ class Server:
             return jsonify(self.anonymizer.get_anonymizers())
         @self.app.route("/genz-preview", methods=["GET"])
         def genz_preview():
+            """Return genz preview anonymization."""
             responsea = OrderedDict([
                 ("example","Call Emily at 577-988-1234"),
                 ("example output","Call GOAT at vibe check"),
@@ -104,35 +105,39 @@ class Server:
             return Response(responseb, mimetype='application/json')
         @self.app.route("/genz", methods=["GET"])
         def genz():
-            """Retrurn genz anonymization."""
+            """Return genz anonymization."""
             gz = GenZ()
             p_r = gz.operate(params={"entity_type": "PERSON"})
             ph_r = gz.operate(params={"entity_type": "PHONE_NUMBER"})
-            p_s = 15
+            text_e = f"Please contact {p_r} at {ph_r} if you have questions "\
+                "about the workshop registration."
+            p_s = text_e.find(p_r)
             p_e = p_s + len(p_r)
-            ph_s = p_e + 4
+            ph_s = text_e.find(ph_r)
             ph_e = ph_s + len(ph_r)
+
             responsec = {
-                "text": f"Please contact {p_r} at {ph_r} if you have questions about"
-                "the workshop registration.",
+                "text": text_e,
                 "items": [
+                    {
+                        "start": ph_s,
+                        "end": ph_e,
+                        "entity_type": "PHONE NUMBER",
+                        "text": ph_r,
+                        "operator": "genz"
+                        },
                     {
                         "start": p_s,
                         "end": p_e,
                         "entity_type": "PERSON",
                         "text": p_r,
                         "operator": "genz"
-                        },
-                    {
-                        "start": ph_s,
-                        "end": ph_e,
-                        "entity_type": "PHONE_NUMBER",
-                        "text": ph_r,
-                        "operator": "genz"
                     }
                 ]
             }
-            return jsonify(responsec)
+            responsec["items"].sort(key=lambda x: x["start"])
+            responsed = json.dumps(responsec)
+            return Response(responsed, mimetype='application/json')
         @self.app.route("/deanonymizers", methods=["GET"])
         def deanonymizers():
             """Return a list of supported deanonymizers."""
